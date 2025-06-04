@@ -1,4 +1,4 @@
-name: Deployments Congregations API
+name: Deploy Congregations API
 
 on:
   workflow_dispatch:
