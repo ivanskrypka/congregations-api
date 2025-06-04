@@ -10,7 +10,6 @@ configMapGenerator:
   - name: congregations-api-config
     namespace: jw-apps
     env: config.env
-    type: Opaque
 
 secretGenerator:
   - name: congregations-api-secrets
