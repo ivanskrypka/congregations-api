@@ -1,0 +1,64 @@
+name: Deployments Congregations API
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Docker image Version"
+        required: true
+        type: choice
+
+jobs:
+  deploy:
+    environment: PROD
+    name: Deploy Congrations API with version=${{github.event.inputs.version}}
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout
+
+      - name: Check if image exists in GHCR
+        id: check-image
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          IMAGE="$IMAGE_NAME:$VERSION"
+          echo "Checking image: $IMAGE"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://ghcr.io/v2/${{ github.repository }}/manifests/$VERSION)
+          echo "Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up sops
+        run: |
+          mkdir -p ~/.config/sops/age
+          echo "${{ secrets.SOPS_AGE_KEY}}" | base64 -d > ~/.config/sops/age/keys.txt
+          curl -sLo sops https://github.com/mozilla/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
+          chmod +x sops
+          sudo mv sops /usr/local/bin/sops
+
+      - name: Set up kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_CONTENT }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+          kubectl config use-context jw-prod
+
+      - name: Deploy new version
+        if: steps.check-image.outputs.exists == 'true'
+        run: |
+          make ENV=PROD kubectl/apply
+          make ENV=PROD VERSION=${{ github.event.inputs.version }} kubectl/update-version
+
+      - name: Image not found
+        if: steps.check-image.outputs.exists != 'true'
+        run: |
+          echo "::error::Image ghcr.io/${{ github.repository }}:${{ github.event.inputs.version }} not found."
+          exit 1

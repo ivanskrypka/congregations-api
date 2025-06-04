@@ -14,6 +14,7 @@ import {
   TokenValidation,
 } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { APP_GUARD } from '@nestjs/core';
       }),
     }),
     CongregationModule,
+    HealthModule,
   ],
   providers: [
     {
@@ -70,6 +72,6 @@ import { APP_GUARD } from '@nestjs/core';
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
-  ],
+  ]
 })
 export class AppModule {}
