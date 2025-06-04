@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jw-apps
+  name: congregations-api
+  labels:
+    app: congregations-api
+spec:
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: congregations-api
+  template:
+    metadata:
+      labels:
+        app: congregations-api
+    spec:
+      containers:
+        - name: congregations-api
+          image: ghcr.io/ivanskrypka/congregations-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: congregations-api-secrets
+            - configMapRef:
+                name: congregations-api-config
+          readinessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: "/api/health"
+              port: 3000
+          livenessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: "/api/health"
+              port: 3000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 80Mi
+            limits:
+              cpu: 500m
+              memory: 150Mi
