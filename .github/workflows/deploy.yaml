@@ -56,13 +56,13 @@ jobs:
           kubectl config use-context jw-prod
 
       - name: Deploy new version
-        if: steps.check-image.outputs.exists == 'true'
+        #if: steps.check-image.outputs.exists == 'true'
         run: |
           make ENV=PROD kubectl/apply
           make ENV=PROD VERSION=${{ github.event.inputs.version }} kubectl/update-version
 
-      - name: Image not found
-        if: steps.check-image.outputs.exists != 'true'
-        run: |
-          echo "::error::Image ghcr.io/${{ github.repository }}:${{ github.event.inputs.version }} not found."
-          exit 1
+      #- name: Image not found
+       # if: steps.check-image.outputs.exists != 'true'
+        #run: |
+         # echo "::error::Image ghcr.io/${{ github.repository }}:${{ github.event.inputs.version }} not found."
+          #exit 1
