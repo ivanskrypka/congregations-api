@@ -29,11 +29,17 @@ spec:
                 name: congregations-api-config
           readinessProbe:
             initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 30
+            failureThreshold: 5
             httpGet:
               path: "/api/health"
               port: 3000
           livenessProbe:
             initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 30
+            failureThreshold: 5
             httpGet:
               path: "/api/health"
               port: 3000
