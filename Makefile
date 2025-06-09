@@ -52,3 +52,9 @@ ifdef VERSION
 	kubectl -n $(NAMESPACE) set image deployment/congregations-api congregations-api=ghcr.io/ivanskrypka/congregations-api:$(VERSION)
 	kubectl -n $(NAMESPACE) rollout status deployment/congregations-api --timeout=300s
 endif
+
+db-migration/up: context/print
+	npm install
+	npm run build
+	kubectl port-forward service/postgres-postgresql 5432:5432 -n jw-apps
+	npm run migration:run
