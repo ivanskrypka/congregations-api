@@ -54,7 +54,7 @@ ifdef VERSION
 endif
 
 db-migration/up: context/print
-	npm install
+	npm install --legacy-peer-deps
 	npm run build
 	kubectl port-forward service/postgres-postgresql 5432:5432 -n jw-apps
 	npm run migration:run
