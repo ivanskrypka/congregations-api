@@ -7,6 +7,7 @@ import {
   Length,
 } from 'class-validator';
 import { PublisherType, ServiceType, Sex } from '../entity/enums';
+import { Utils } from '../../utils/utils';
 
 export class CreatePublisherDto {
   @IsString()
@@ -23,13 +24,13 @@ export class CreatePublisherDto {
 
   @IsEnum(PublisherType, {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    message: `Should be one of the values: ${Object.keys(PublisherType)}`,
+    message: `Should be one of the values: ${Utils.enumKeys(PublisherType)}`,
   })
   publisherType: PublisherType;
 
   @IsEnum(Sex, {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    message: `Should be one of the values: ${Object.keys(Sex)}`,
+    message: `Should be one of the values: ${Utils.enumKeys(Sex)}`,
   })
   sex: Sex;
 
@@ -47,6 +48,10 @@ export class CreatePublisherDto {
 
   @IsOptional()
   @IsArray()
-  @IsEnum(ServiceType, { each: true })
+  @IsEnum(ServiceType, {
+    each: true,
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    message: `Should be one of the values: ${Utils.enumKeys(ServiceType)}`,
+  })
   serviceTypes: ServiceType[];
 }
