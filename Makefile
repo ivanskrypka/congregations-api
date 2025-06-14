@@ -54,7 +54,11 @@ ifdef VERSION
 endif
 
 db-migration/up: context/print
-	npm install --legacy-peer-deps
-	npm run build
-	kubectl port-forward service/postgres-postgresql 5432:5432 -n infra
-	npm run migration:run
+	@npm install --legacy-peer-deps
+	@npm run build
+	@kubectl port-forward service/postgres-postgresql 5432:5432 -n infra >  /dev/null 2>&1 & PORT_FORWARD_PID=$$!; \
+	sleep 3; \
+	npm run migration:run; \
+	MIGRATION_EXIT_CODE=$$?; \
+	kill $$PORT_FORWARD_PID; \
+	exit $$MIGRATION_EXIT_CODE
