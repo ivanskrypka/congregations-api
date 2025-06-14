@@ -5,19 +5,11 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
-  UseInterceptors,
 } from '@nestjs/common';
-import {
-  Resource,
-  Roles,
-  Scopes,
-  Public,
-  RoleMatchingMode,
-} from 'nest-keycloak-connect';
 import { CongregationService } from './congregation.service';
-import { CongregationDto } from './dto/congregation.dto';
 import { CreateCongregationDto } from './dto/create-congregation.dto';
 import { ContextLogger } from 'nestjs-context-logger';
+import { Congregation } from './entity/congregation.entity';
 
 @Controller('congregations')
 export class CongregationController {
@@ -28,7 +20,7 @@ export class CongregationController {
   @Post()
   async createCongregation(
     @Body() createRequest: CreateCongregationDto,
-  ): Promise<CongregationDto> {
+  ): Promise<Congregation> {
     const newCongregation =
       await this.congregationService.create(createRequest);
     this.logger.log(
@@ -40,7 +32,7 @@ export class CongregationController {
   @Get(':id')
   async getCongregationById(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<CongregationDto> {
+  ): Promise<Congregation> {
     const congregation = await this.congregationService.getById(id);
     this.logger.log(
       `Congregation for id=${id} found ${JSON.stringify(congregation)}`,

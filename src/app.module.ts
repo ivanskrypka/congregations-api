@@ -15,8 +15,9 @@ import {
 } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
 import { HealthModule } from './health/health.module';
-import { CountryModule } from './location/countryModule';
-import { Country } from './location/entity/country.entity';
+import { Country } from './congregation/entity/country.entity';
+import { PublishersModule } from './publishers/publishers.module';
+import { Publisher } from './publishers/entity/publisher.entity';
 
 @Module({
   imports: [
@@ -54,13 +55,13 @@ import { Country } from './location/entity/country.entity';
         password: configService.getOrThrow('DB_PASSWORD'),
         database: configService.getOrThrow('DB_NAME'),
         schema: configService.getOrThrow('DB_SCHEMA'),
-        entities: [Country, Congregation],
+        entities: [Country, Congregation, Publisher],
         synchronize: false,
       }),
     }),
-    CountryModule,
     CongregationModule,
     HealthModule,
+    PublishersModule,
   ],
   providers: [
     {

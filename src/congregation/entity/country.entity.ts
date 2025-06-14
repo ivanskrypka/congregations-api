@@ -3,29 +3,22 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { Country } from './country.entity';
 
-@Entity({ name: 'congregations' })
-export class Congregation {
+@Entity({ name: 'countries' })
+export class Country {
   @PrimaryColumn('uuid')
   id: string;
 
   @Column()
-  name: string;
+  code: string;
 
   @Column()
   timezone: string;
-
-  @ManyToOne(() => Country)
-  @JoinColumn({ name: 'country_id' })
-  country: Country;
 
   @VersionColumn()
   version: number;
