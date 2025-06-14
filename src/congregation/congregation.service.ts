@@ -19,10 +19,15 @@ export class CongregationService {
   }
 
   async getById(id: string): Promise<CongregationDto> {
-    const entity = await this.congregationRepository.findOneBy({ id });
+    const entity = await this.congregationRepository.findOne({
+      where: { id },
+      relations: ['country'],
+    });
     if (!entity) {
       throw new NotFoundException(`Could not find congregation with id ${id}`);
     }
-    return Promise.resolve(new CongregationDto(id, entity.name));
+    return Promise.resolve(
+      new CongregationDto(id, entity.name, entity.timezone, entity.country),
+    );
   }
 }
