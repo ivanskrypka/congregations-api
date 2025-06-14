@@ -39,5 +39,7 @@ jobs:
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_NAME: ${{ vars.DB_NAME }}
+          DB_SCHEMA: ${{ vars.DB_SCHEMA }}
         run: |
           make ENV=PROD db-migration/up
