@@ -1,23 +1,17 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Post,
-  UseInterceptors,
+  Put,
 } from '@nestjs/common';
-import {
-  Resource,
-  Roles,
-  Scopes,
-  Public,
-  RoleMatchingMode,
-} from 'nest-keycloak-connect';
 import { CongregationService } from './congregation.service';
-import { CongregationDto } from './dto/congregation.dto';
 import { CreateCongregationDto } from './dto/create-congregation.dto';
 import { ContextLogger } from 'nestjs-context-logger';
+import { Congregation } from './entity/congregation.entity';
 
 @Controller('congregations')
 export class CongregationController {
@@ -28,23 +22,32 @@ export class CongregationController {
   @Post()
   async createCongregation(
     @Body() createRequest: CreateCongregationDto,
-  ): Promise<CongregationDto> {
+  ): Promise<Congregation> {
     const newCongregation =
       await this.congregationService.create(createRequest);
-    this.logger.log(
+    this.logger.info(
       `New congregation created ${JSON.stringify(newCongregation)}`,
     );
-    return Promise.resolve(newCongregation);
+    return newCongregation;
+  }
+
+  @Delete()
+  async deleteCongregation(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<void> {
+    await this.congregationService.delete(id);
+    this.logger.info(`Congregation  with id=${id} deleted`);
+    return Promise.resolve();
   }
 
   @Get(':id')
   async getCongregationById(
     @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<CongregationDto> {
+  ): Promise<Congregation> {
     const congregation = await this.congregationService.getById(id);
-    this.logger.log(
+    this.logger.info(
       `Congregation for id=${id} found ${JSON.stringify(congregation)}`,
     );
-    return Promise.resolve(congregation);
+    return congregation;
   }
 }
