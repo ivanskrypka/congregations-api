@@ -22,7 +22,7 @@ export class CongregationService {
     name,
     timezone,
     countryId,
-    city
+    city,
   }: CreateCongregationDto): Promise<Congregation> {
     const country = await this.countryRepository.findOneBy({ id: countryId });
     if (!country) {
@@ -34,7 +34,7 @@ export class CongregationService {
       name: name,
       timezone: timezone,
       country: countryId,
-      city: city
+      city: city,
     });
     return await this.congregationRepository.save(entity);
   }
@@ -47,6 +47,15 @@ export class CongregationService {
     if (!entity) {
       throw new NotFoundException(`Could not find congregation with id ${id}`);
     }
-    return Promise.resolve(Object.assign(new Congregation(), entity));
+    return Promise.resolve(entity);
+  }
+
+  async delete(id: string): Promise<void> {
+    const entity = await this.getById(id);
+    await this.congregationRepository.remove(entity);
+  }
+
+  async exists(id: string): Promise<boolean> {
+    return (await this.congregationRepository.count({ where: { id } })) > 0;
   }
 }

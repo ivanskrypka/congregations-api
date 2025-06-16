@@ -10,7 +10,7 @@ async function bootstrap() {
     bufferLogs: true,
     logger: bootstrapLogger,
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.setGlobalPrefix('api');
   await app.listen(app.get(ConfigService).getOrThrow('SERVER_PORT'));
 }

@@ -23,13 +23,11 @@ export class CreatePublisherDto {
   fatherName: string;
 
   @IsEnum(PublisherType, {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     message: `Should be one of the values: ${Utils.enumKeys(PublisherType)}`,
   })
   publisherType: PublisherType;
 
   @IsEnum(Sex, {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     message: `Should be one of the values: ${Utils.enumKeys(Sex)}`,
   })
   sex: Sex;
@@ -50,7 +48,6 @@ export class CreatePublisherDto {
   @IsArray()
   @IsEnum(ServiceType, {
     each: true,
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     message: `Should be one of the values: ${Utils.enumKeys(ServiceType)}`,
   })
   serviceTypes: ServiceType[];

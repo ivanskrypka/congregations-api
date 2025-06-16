@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
 } from '@nestjs/common';
 import { CongregationService } from './congregation.service';
 import { CreateCongregationDto } from './dto/create-congregation.dto';
@@ -23,10 +25,19 @@ export class CongregationController {
   ): Promise<Congregation> {
     const newCongregation =
       await this.congregationService.create(createRequest);
-    this.logger.log(
+    this.logger.info(
       `New congregation created ${JSON.stringify(newCongregation)}`,
     );
-    return Promise.resolve(newCongregation);
+    return newCongregation;
+  }
+
+  @Delete()
+  async deleteCongregation(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<void> {
+    await this.congregationService.delete(id);
+    this.logger.info(`Congregation  with id=${id} deleted`);
+    return Promise.resolve();
   }
 
   @Get(':id')
@@ -34,9 +45,9 @@ export class CongregationController {
     @Param('id', new ParseUUIDPipe()) id: string,
   ): Promise<Congregation> {
     const congregation = await this.congregationService.getById(id);
-    this.logger.log(
+    this.logger.info(
       `Congregation for id=${id} found ${JSON.stringify(congregation)}`,
     );
-    return Promise.resolve(congregation);
+    return congregation;
   }
 }

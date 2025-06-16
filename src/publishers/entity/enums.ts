@@ -15,4 +15,5 @@ export enum ServiceType {
   AUDIO_VIDEO,
   GENERAL,
   USHER,
+  MICROPHONE,
 }
