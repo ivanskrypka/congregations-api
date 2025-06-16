@@ -11,6 +11,10 @@ export class CreateCongregationDto {
   @IsIn(TIMEZONES, { message: 'Timezone is not valid' })
   timezone: string;
 
+  @IsString()
+  @Length(1, 50)
+  city: string;
+
   @IsUUID()
   countryId: string;
 }

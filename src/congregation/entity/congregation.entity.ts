@@ -27,6 +27,9 @@ export class Congregation {
   @JoinColumn({ name: 'country_id' })
   country: Country;
 
+  @Column()
+  city: string;
+
   @VersionColumn()
   version: number;
 

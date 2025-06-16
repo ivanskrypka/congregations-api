@@ -22,6 +22,7 @@ export class CongregationService {
     name,
     timezone,
     countryId,
+    city
   }: CreateCongregationDto): Promise<Congregation> {
     const country = await this.countryRepository.findOneBy({ id: countryId });
     if (!country) {
@@ -33,6 +34,7 @@ export class CongregationService {
       name: name,
       timezone: timezone,
       country: countryId,
+      city: city
     });
     return await this.congregationRepository.save(entity);
   }
