@@ -16,11 +16,12 @@ export class InitSchema1749397330429 implements MigrationInterface {
           name varchar(255) NOT NULL,
           timezone varchar(100) NOT NULL,
           country_id varchar(255) NOT NULL,
+          city varchar(50) NOT NULL,
           version int not null default 0,
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
           created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
           CONSTRAINT fk_country FOREIGN KEY (country_id) REFERENCES congregations.countries(id),
-          CONSTRAINT unique_name_country UNIQUE (name, country_id)
+          CONSTRAINT unique_country_city_name UNIQUE (country_id, city, name)
       ); 
     `);
   }
