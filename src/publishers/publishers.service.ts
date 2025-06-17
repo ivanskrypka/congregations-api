@@ -57,7 +57,7 @@ export class PublishersService {
       .where('publisher.congregationId = :congregationId', { congregationId });
     if (searchTerm) {
       cb.andWhere(
-        'publisher.firstName ILIKE :searchTerm OR publisher.lastName ILIKE :searchTerm',
+        '(publisher.firstName ILIKE :searchTerm OR publisher.lastName ILIKE :searchTerm)',
         { searchTerm: `%${searchTerm}%` },
       );
     }
