@@ -5,34 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Congregation } from './congregation/entity/congregation.entity';
 import { ContextLoggerModule } from 'nestjs-context-logger';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  AuthGuard,
-  KeycloakConnectModule,
-  PolicyEnforcementMode,
-  ResourceGuard,
-  RoleGuard,
-  TokenValidation,
-} from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
 import { HealthModule } from './health/health.module';
 import { Country } from './congregation/entity/country.entity';
 import { PublishersModule } from './publishers/publishers.module';
 import { Publisher } from './publishers/entity/publisher.entity';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 
 @Module({
   imports: [
-    KeycloakConnectModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        authServerUrl: configService.getOrThrow('KEYCLOAK_SERVER_URL'),
-        realm: configService.getOrThrow('KEYCLOAK_REALM'),
-        clientId: configService.getOrThrow('CLIENT_ID'),
-        secret: configService.getOrThrow('CLIENT_SECRET'),
-        tokenValidation: TokenValidation.ONLINE,
-        policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
-      }),
-    }),
     ContextLoggerModule.forRootAsync({
       useFactory: () => ({
         contextAdapter: (context: ExecutionContext) => ({
@@ -62,19 +44,12 @@ import { Publisher } from './publishers/entity/publisher.entity';
     CongregationModule,
     HealthModule,
     PublishersModule,
+    AuthModule,
   ],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ResourceGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RoleGuard,
+      useClass: JwtAuthGuard,
     },
   ],
 })

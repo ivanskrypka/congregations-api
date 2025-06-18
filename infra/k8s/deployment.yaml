@@ -22,6 +22,12 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
+          env:
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-key
+                  key: keycloak.pem
           envFrom:
             - secretRef:
                 name: congregations-api-secrets
