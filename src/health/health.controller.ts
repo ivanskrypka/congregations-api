@@ -4,7 +4,7 @@ import {
   HealthCheckService,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { Public } from 'nest-keycloak-connect';
+import { Public } from '../auth/decorator/public.decorator';
 
 @Controller('health')
 export class HealthController {

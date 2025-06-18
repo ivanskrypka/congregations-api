@@ -37,6 +37,7 @@ context/print:
 kubectl/apply: context/print check-age-key
 ifeq ($(ENV),PROD)
 	sops -d infra/k8s/config/prod/secrets.enc.env > infra/k8s/config/prod/secrets.env
+	sops -d infra/k8s/config/prod/keycloak.enc.pem > infra/k8s/config/prod/keycloak.pem
 	kustomize build infra/k8s/config/prod > infra/k8s/configs.yaml
 else
 	kustomize build infra/k8s/config/local > infra/k8s/configs.yaml
@@ -54,7 +55,7 @@ ifdef VERSION
 endif
 
 db-migration/up: context/print
-	@npm install --legacy-peer-deps
+	@npm install
 	@npm run build
 	@kubectl port-forward service/postgres-postgresql 5432:5432 -n infra >  /dev/null 2>&1 & PORT_FORWARD_PID=$$!; \
 	sleep 3; \

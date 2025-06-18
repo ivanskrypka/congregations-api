@@ -13,6 +13,10 @@ configMapGenerator:
 
 secretGenerator:
   - name: congregations-api-secrets
-    namespace: infra
+    namespace: jw-apps
     env: secrets.env
     type: Opaque
+  - name: keycloak-key
+    namespace: jw-apps
+    files:
+      - keycloak.pem
